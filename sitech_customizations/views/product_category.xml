@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-    <record id="product_category_inherit_ak" model="ir.ui.view">
+    <record id="product_category_inherit_tree_ak" model="ir.ui.view">
         <field name="name">product.category.tree.inherit</field>
         <field name="model">product.category</field>
         <field name="inherit_id" ref="product.product_category_list_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='display_name']" position="after">
+                <field name="company_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_category_form_inherit_ak" model="ir.ui.view">
+        <field name="name">product.category.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
                 <field name="company_id" />
             </xpath>
         </field>
