@@ -282,11 +282,22 @@ class SalesTargetLine(models.Model):
             "child_line_id":new_line.id
         })
         return new_line
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
+        if backup_lead_tag:
+            for vals in vals_list:
+                vals['tag_ids'] = [(6, 0, [backup_lead_tag.id])]
+        return super().create(vals_list)
 
     def create_lead(self):
         for line in self:
             rec = line.target_id
             state = self.env["crm.stage"].search([("name","like","Balance Target Lead")],limit=1)
+            tag = self.env["crm.tag"].search([("name","like","Must Win")],limit=1)
+            
+            
             vals = {
                 'name': line.partner_id.name and f"{line.partner_id.name} - {rec.name}" or (rec.name or 'New Opportunity'),
                 'type': 'opportunity',
@@ -300,7 +311,9 @@ class SalesTargetLine(models.Model):
                 'segment_id': [(6, 0, line.segment_id.ids)] if getattr(line, 'segment_id', False) else False,
                 'lead_type_id': [(6, 0, line.lead_type_id.ids)] if getattr(line, 'lead_type_id', False) else False,
                 'sub_segment_id': [(6, 0, line.sub_segment_id.ids)] if getattr(line, 'sub_segment_id', False) else False,
-                "expected_realization_date": line.expected_realization_date
+                "expected_realization_date": line.expected_realization_date,
+                "tag_ids": [(6, 0, [tag.id])] if tag else False,
+                
             }
             if state:
                 vals["stage_id"] = state.id
