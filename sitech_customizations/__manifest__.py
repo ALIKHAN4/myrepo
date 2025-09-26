@@ -11,6 +11,7 @@
         "data/crm_stage.xml",
         "views/sales_target_views.xml",
         "views/sale_order.xml",
+        "views/crm_lost_reason.xml",
         "security/ir.model.access.csv","views/crm_lead_views.xml"
     ],
     'assets': {
