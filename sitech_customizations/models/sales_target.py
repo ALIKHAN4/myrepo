@@ -283,14 +283,6 @@ class SalesTargetLine(models.Model):
         })
         return new_line
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
-        if backup_lead_tag:
-            for vals in vals_list:
-                vals['tag_ids'] = [(6, 0, [backup_lead_tag.id])]
-        return super().create(vals_list)
-
     def create_lead(self):
         for line in self:
             rec = line.target_id

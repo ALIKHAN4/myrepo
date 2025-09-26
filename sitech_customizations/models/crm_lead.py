@@ -44,6 +44,14 @@ class CrmLead(models.Model):
                 rec.all_child_lead_ids = False
                 rec.lead_children = False
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
+        if backup_lead_tag:
+            for vals in vals_list:
+                vals['tag_ids'] = [(6, 0, [backup_lead_tag.id])]
+        return super().create(vals_list)
+    
     def create_parent_child_relation(self,new_lead_id):
         for old_lead in self:
             new_lead_id.write({"parent_lead_id":old_lead.id})
