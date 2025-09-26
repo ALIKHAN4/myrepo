@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record model="crm.stage" id="balance_stage_lead" forcecreate="False">
+            <field name="name">Balance Target Lead</field>
+            <field name="sequence">10</field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

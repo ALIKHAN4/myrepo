@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_auto_lead_sale_target" model="ir.cron">
+        <field name="name">Auto Lead of Pending Sale Target</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="model_id" ref="model_sales_target"/>
+        <field name="code">model.create_lead_and_activity()</field>
+        <field name="state">code</field>
+    </record>
+
+</odoo>

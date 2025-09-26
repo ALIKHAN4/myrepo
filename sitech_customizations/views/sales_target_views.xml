@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_sales_target_lines_search" model="ir.ui.view">
+        <field name="name">sales.target.line.search</field>
+        <field name="model">sales.target.line</field>
+        <field name="arch" type="xml">
+            <search string="Sales Target Lines">
+                <field name="name" />
+                <field name="segment_id" />
+                <field name="partner_id" />
+                <field name="user_id" />
+                <field name="product_id" />
+                <field name="company_id" />
+                <filter string="Expected Realization" name="filter_expected_realization_date" date="expected_realization_date"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Segment" name='segment_id' context="{'group_by':'segment_id'}"/>
+                    <filter string="Partner" name='partner_id' context="{'group_by':'partner_id'}"/>
+                    <filter string="Salesperson" name='user_id' context="{'group_by':'user_id'}"/>
+                    <filter string="Product" name='product_id' context="{'group_by':'product_id'}"/>
+                    <filter string="Company" name='company_id' context="{'group_by':'company_id'}"/>
+                    <separator/>
+                    <filter string="Expected Realization" name="expected_realization_date" context="{'group_by':'expected_realization_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- list -->
+    <record id="view_sales_target_list" model="ir.ui.view">
+        <field name="name">sales.target.list</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="team_id" domain="[('company_id', 'in', [company_id, False])]"/>
+                <field name="timespan"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="target_value"/>
+                <field name="achievement_value"/>
+                <field name="achievement_status" decoration-danger="success_status == 'low'" decoration-warning="success_status == 'medium'" decoration-success="success_status == 'high'"/>
+                <field name="success_status" widget="badge" decoration-danger="success_status == 'low'" decoration-warning="success_status == 'medium'" decoration-success="success_status == 'high'"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+        <record id="view_sales_target_line_list" model="ir.ui.view">
+        <field name="name">sales.target.line.list</field>
+        <field name="model">sales.target.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="team_id"/>
+                <field name="timespan"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="partner_id"/>
+                <field name="user_id" domain="[('id', 'in', team_member_ids)]"/>
+                <field name="product_id"/>
+                <field name="description"/>
+                <field name="expected_realization_date" options="{'datepicker':{'showtype':'months'}}"/>
+                <field name="quantity" sum='Total Quantity'/>
+                <field name="unit_price"/>
+                <field name="total_price" sum='Total Amount'/>
+                <field name="achieved_value" readonly="1" sum='Total Achieved'/>
+                <field name="pending" readonly="1" sum='Total Pending'/>
+                <field name="status" widget="badge" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+                <field name="achievement_status" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="view_sales_target_form" model="ir.ui.view">
+        <field name="name">sales.target.form</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <form string="Sales Target" edit="state == 'draft'">
+                <header>
+                <button name="action_reset_draft" type="object" string="Set to Draft"
+                        invisible="state not in ['waiting','approved','rejected']"/>
+
+                <button name="action_waiting" type="object" string="Send for Approval"
+                        invisible="state != 'draft'"/>
+
+                <button name="action_approve" type="object" class="oe_highlight" string="Approve"
+                        invisible="state != 'waiting'"/>
+
+                <button name="action_reject" type="object" string="Reject"
+                        invisible="state != 'waiting'"/>
+
+                <field name="state" widget="statusbar"
+                    statusbar_visible="draft,waiting,approved,rejected"/>
+               
+                </header>
+                <sheet> 
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_leads" type="object" class="oe_stat_button" icon="fa-briefcase">
+                        <field string="Leads" name="lead_count" widget="statinfo"/>
+                    </button>
+                    <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                        <field string="Quotations" name="order_count" widget="statinfo"/>
+                    </button>
+                </div>
+                    <group >
+                        <group>
+                            <field name="name" readonly="state != 'draft'"/>
+                            <field name="company_id" readonly="state != 'draft'"/>
+                            <field name="team_id" readonly="state != 'draft'"/>
+                            <field name="timespan" readonly="state != 'draft'"/>
+                            <field name="period_start"
+       widget="daterange"
+       options="{'related_end_date': 'period_end'}"
+       readonly="state != 'draft'"/>
+
+<field name="period_end" readonly="state != 'draft'"/>
+                            <!-- <field name="period_start" readonly="state != 'draft'"/>
+                            <field name="period_end" readonly="state != 'draft'"/> -->
+                        </group>
+                        <group>
+                            <field name="target_value"/>
+                            <field name="achievement_value" readonly="1"/>
+                            <field name="achievement_status" decoration-danger="success_status == 'low'" decoration-warning="success_status == 'medium'" decoration-success="success_status == 'high'"/>
+                            <field name="success_status" widget="badge" decoration-danger="success_status == 'low'" decoration-warning="success_status == 'medium'" decoration-success="success_status == 'high'"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Line Items">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                    <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                    <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                    <field name="partner_id" domain="['|',('company_id','=',company_id),('company_id','=',False)]"/>
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="user_id" domain="[('id', 'in', team_member_ids),'|',('company_id','=',company_id),('company_id','=',False)]"/>
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="expected_realization_date" options="{'datepicker':{'showtype':'months'}}"/>
+                                    <field name="quantity" sum='Total Quantity'/>
+                                    <field name="unit_price"/>
+                                    <field name="total_price" sum='Total Amount'/>
+                                    <field name="achieved_value" readonly="1" sum='Total Achieved'/>
+                                    <field name="pending" readonly="1" sum='Total Pending'/>
+                                    <field name="line_type" readonly="1"/>
+                                    <field name="status" widget="badge" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+                                    <field name="achievement_status" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+                                    <field name="quote_generated" widget="integer_quote" options="{'quote_action':'action_view_generated'}" string="Quote Generated"/>
+                                    <field name="quote_confirmed" widget="integer_quote" options="{'quote_action':'action_view_confirmed'}" string="Quote Confirmed"/>
+                                    <field name="quote_pending" widget="integer_quote" options="{'quote_action':'action_view_pending'}"  string="Quote Pending"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                        <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                        <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                        <field name="partner_id"/>
+                                        <field name="user_id"/>
+                                        <field name="product_id"/>
+                                        <field name="description"/>
+                                        <field name="expected_realization_date" options="{'datepicker':{'showtype':'months'}}"/>
+                                        <field name="quantity"/>
+                                        <field name="unit_price"/>
+                                        <field name="total_price"/>
+                                        <field name="achieved_value" readonly="1"/>
+                                        <field name="pending" readonly="1"/>
+                                        <field name="status" widget="badge" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+                                        <field name="achievement_status" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_sales_target_pivot" model="ir.ui.view">
+        <field name="name">sales.target.pivot</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <pivot string="Sales Target Analysis">
+                <!-- Measures -->
+                <field name="target_value" type="measure"/>
+                <field name="achievement_value" type="measure"/>
+                <field name="achievement_status" type="measure"/>
+
+                <!-- Dimensions -->
+                <field name="company_id"/>
+                <field name="team_id"/>
+                <field name="timespan"/>
+                <field name="period_start" interval="month"/>
+                <field name="state"/>
+                <field name="success_status"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_sales_target_line_pivot" model="ir.ui.view">
+        <field name="name">sales.target.line.pivot</field>
+        <field name="model">sales.target.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Sales Target Line Analysis">
+                <!-- Measures -->
+                <field name="quantity" type="measure"/>
+                <field name="total_price" type="measure"/>
+                <field name="achieved_value" type="measure"/>
+                <field name="pending" type="measure"/>
+                <field name="achievement_status" type="measure"/>
+                <!-- Dimensions -->
+                <field name="company_id"/>
+                <field name="team_id"/>
+                <field name="timespan"/>
+                <field name="period_start" interval="month"/>
+                <field name="expected_realization_date" interval="month"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="product_id"/>
+                <field name="description"/>
+                <field name="segment_id"/>
+                <field name="status"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_sales_target" model="ir.actions.act_window">
+        <field name="name">Sales Targets</field>
+        <field name="res_model">sales.target</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+    <!-- Action -->
+    <record id="action_sales_target_line" model="ir.actions.act_window">
+        <field name="name">Sales Targets Lines</field>
+        <field name="res_model">sales.target.line</field>
+        <field name="view_mode">list,pivot,graph</field>
+    </record>
+
+    <!-- Menu under CRM main -->
+    <menuitem id="menu_sales_target_root" name="Sales Targets" parent="crm.crm_menu_config" sequence="90"/>
+    <menuitem id="menu_sales_target" name="Targets" parent="menu_sales_target_root" action="action_sales_target" sequence="10"/>
+    <menuitem id="menu_sales_target_line" name="Targets Lines" parent="menu_sales_target_root" action="action_sales_target_line" sequence="11"/>
+</odoo>

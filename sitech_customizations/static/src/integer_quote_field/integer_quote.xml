@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sitech_customizations.IntegerQuote">
+        <!-- <xpath expr="//*" position="replace"> -->
+            <button 
+                type="button"
+                t-on-click="() => this.openQuoteAction()"
+                class="btn btn-primary"
+                >
+                <span t-esc="formattedValue" />
+            </button>
+        <!-- </xpath> -->
+    </t>
+</templates>

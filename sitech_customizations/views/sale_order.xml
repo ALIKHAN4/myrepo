@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_inherit_lead_field" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.fields</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="expected_realization_date" />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+
+                <button name="action_view_leads" type="object" class="oe_stat_button" icon="fa-briefcase">
+                    <field string="Leads" name="lead_count" widget="statinfo"/>
+                </button>
+                <button name="action_view_sale_target" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                    <field string="Sales Target" name="sale_target_count" widget="statinfo"/>
+                </button>
+            
+            </xpath>
+
+
+
+        </field>
+    </record>
+
+</odoo>

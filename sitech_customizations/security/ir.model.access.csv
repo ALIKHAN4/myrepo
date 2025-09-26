@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_lead_line_user,access.crm.lead.line.user,model_crm_lead_line,base.group_user,1,1,1,1
+
+access_crm_lead_segment_user,crm.lead.segment,model_crm_lead_segment,base.group_user,1,1,1,1
+access_crm_lead_type_user,crm.lead.type,model_crm_lead_type,base.group_user,1,1,1,1
+access_crm_lead_subsegment_user,crm.lead.subsegment,model_crm_lead_subsegment,base.group_user,1,1,1,1
+
+access_sales_target_user,sales.target,model_sales_target,base.group_user,1,1,1,1
+access_sales_target_line_user,sales.target.line,model_sales_target_line,base.group_user,1,1,1,1
