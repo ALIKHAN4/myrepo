@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+   <record id="crm_lost_reason_comp_rule" model="ir.rule">
+        <field name="name">Crm Lost Reason multi-company</field>
+        <field name="model_id" ref="model_crm_lost_reason"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+   <record id="product_category_comp_rule" model="ir.rule">
+        <field name="name">Product Category multi-company</field>
+        <field name="model_id" ref="model_product_category"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+   <record id="crm_lead_type_comp_rule" model="ir.rule">
+        <field name="name">Crm Lead Type multi-company</field>
+        <field name="model_id" ref="model_crm_lead_type"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+   <record id="crm_lead_segment_comp_rule" model="ir.rule">
+        <field name="name">Crm Lead Segment multi-company</field>
+        <field name="model_id" ref="model_crm_lead_segment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+   <record id="crm_lead_subsegment_comp_rule" model="ir.rule">
+        <field name="name">Crm Lead Subsegment Se multi-company</field>
+        <field name="model_id" ref="model_crm_lead_subsegment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

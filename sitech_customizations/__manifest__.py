@@ -14,6 +14,7 @@
         "views/crm_lost_reason.xml",
         "views/product_category.xml",
         "security/ir.model.access.csv","views/crm_lead_views.xml"
+        "data/record_rule.xml",
     ],
     'assets': {
         'web.assets_backend': [
