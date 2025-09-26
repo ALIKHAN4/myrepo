@@ -141,8 +141,11 @@ crm.view_crm_lead_kanban -->
     <field name="name">crm.lead.type.list</field>
     <field name="model">crm.lead.type</field>
     <field name="arch" type="xml">
-        <list><field name="name"/>
-            <field name="color" widget="color_picker"/></list>
+        <list>
+            <field name="name"/>
+            <field name="company_id"/>
+            <field name="color" widget="color_picker"/>
+        </list>
     </field>
 </record>
 
@@ -150,8 +153,12 @@ crm.view_crm_lead_kanban -->
     <field name="name">crm.lead.type.form</field>
     <field name="model">crm.lead.type</field>
     <field name="arch" type="xml">
-        <form><sheet><field name="name"/>
-            <field name="color" widget="color_picker"/></sheet>   
+        <form>
+            <sheet>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="color" widget="color_picker"/>
+            </sheet>   
         </form>
     </field>
 </record>
@@ -171,13 +178,13 @@ crm.view_crm_lead_kanban -->
         <field name="model">crm.lead.subsegment</field>
         <field name="arch" type="xml">
             <form>
-                <group>
                 <sheet>
-                    <field name="name"/>
-                    <field name="company_id" />
-                    <field name="color" widget="color_picker"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="company_id" />
+                        <field name="color" widget="color_picker"/>
+                    </group>
                 </sheet>    
-                </group>
             </form>
     </field>
 </record>

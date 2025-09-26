@@ -5,5 +5,6 @@ class CrmLeadType(models.Model):
     _description = 'CRM Lead Type'
 
     name = fields.Char(required=True)
+    company_id = fields.Many2one('res.company', string='Company')
 
     color = fields.Integer(string='color')
