@@ -1,4 +1,7 @@
 from odoo import models, fields ,api
+from odoo.exceptions import UserError
+
+
 
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
@@ -43,13 +46,36 @@ class CrmLead(models.Model):
             else:
                 rec.all_child_lead_ids = False
                 rec.lead_children = False
-
+                
     @api.model_create_multi
     def create(self, vals_list):
         backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
         if backup_lead_tag:
             for vals in vals_list:
+                segment_ids = [value[1] for value in vals.get('segment_id')]
+                sub_segment_ids = [value[1] for value in vals.get('sub_segment_id')]
+                lead_type_ids = [value[1] for value in vals.get('lead_type_id')]
+                customer = vals.get('partner_id')
+                salesperson = vals.get('user_id')
+                line_items = vals.get('line_items')
+                date = vals.get('expected_realization_date')
+                product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
+                
+                sales_target_line = self.env['sales.target.line'].search([
+                    ('segment_id', 'in', segment_ids),
+                    ('sub_segment_id', 'in', sub_segment_ids), 
+                    ('lead_type_id', 'in', lead_type_ids), 
+                    ('partner_id', '=', customer), 
+                    ('user_id', '=', salesperson), 
+                    ('product_id', 'in', product_ids), 
+                    ('expected_realization_date', '=', date), 
+                    ])
+                if sales_target_line:
+                    vals['sales_target_line_id'] = sales_target_line.id
+                
+
                 vals['tag_ids'] = [(6, 0, [backup_lead_tag.id])]
+                    
         return super().create(vals_list)
     
     def create_parent_child_relation(self,new_lead_id):

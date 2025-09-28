@@ -1,6 +1,8 @@
 
 from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import UserError
+
 from datetime import datetime, timedelta
 
 class SalesTarget(models.Model):
@@ -207,8 +209,10 @@ class SalesTargetLine(models.Model):
     @api.depends("sale_order_ids.amount_total", "lead_ids")
     def _compute_achieved_value(self):
         for line in self:
+            raise UserError('hit')
             total = sum(order.amount_total for order in line.sale_order_ids if order.state=='sale')
             line.achieved_value = total
+            
     @api.depends('total_price', 'achieved_value')
     def _compute_pending(self):
         for line in self:
