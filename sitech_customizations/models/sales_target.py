@@ -51,6 +51,7 @@ class SalesTarget(models.Model):
             # avoid duplicate lead creation if re-approving
             existing_leads = self.env['crm.lead'].search([('sales_target_line_id', 'in', rec.line_ids.ids)])
             created_for = set(existing_leads.mapped('sales_target_line_id').ids)
+            tag = self.env["crm.tag"].search([("name","like","Must Win")],limit=1)
             for line in rec.line_ids:
                 if line.id in created_for:
                     continue
@@ -67,7 +68,10 @@ class SalesTarget(models.Model):
                     'segment_id': [(6, 0, line.segment_id.ids)] if getattr(line, 'segment_id', False) else False,
                     'lead_type_id': [(6, 0, line.lead_type_id.ids)] if getattr(line, 'lead_type_id', False) else False,
                     'sub_segment_id': [(6, 0, line.sub_segment_id.ids)] if getattr(line, 'sub_segment_id', False) else False,
-                    "expected_realization_date": line.expected_realization_date
+                    "expected_realization_date": line.expected_realization_date,
+                    "tag_ids": [(6, 0, [tag.id])] if tag else False,
+
+
                 }
                 lead = self.env['crm.lead'].create(vals)
                 # if you have crm.lead.line model:
@@ -201,6 +205,7 @@ class SalesTargetLine(models.Model):
     def _compute_sale_order_ids(self):
         for rec in self:
             orders = rec.lead_ids.mapped("order_ids")
+            # raise UserError(orders)
             rec.sale_order_ids = orders
             rec.quote_generated = len(orders)
             rec.quote_confirmed = len(orders.filtered(lambda o: o.state in ["sale", "done"]))
@@ -209,7 +214,6 @@ class SalesTargetLine(models.Model):
     @api.depends("sale_order_ids.amount_total", "lead_ids")
     def _compute_achieved_value(self):
         for line in self:
-            raise UserError('trigger')
             total = sum(order.amount_total for order in line.sale_order_ids if order.state=='sale')
             line.achieved_value = total
             
@@ -291,7 +295,7 @@ class SalesTargetLine(models.Model):
         for line in self:
             rec = line.target_id
             state = self.env["crm.stage"].search([("name","like","Balance Target Lead")],limit=1)
-            tag = self.env["crm.tag"].search([("name","like","Must Win")],limit=1)
+            tag = self.env["crm.tag"].search([("name","like","Backup-Lead")],limit=1)
             
             
             vals = {

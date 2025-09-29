@@ -51,6 +51,21 @@ class SaleOrder(models.Model):
                 rec.lead_type_id = False
                 rec.sub_segment_id = False
                 rec.expected_realization_date = False
+                
+    def action_confirm(self):
+        super().action_confirm()
+        for rec in self:
+            if rec.opportunity_id.sales_target_line_id:
+                rec.opportunity_id.sales_target_line_id._compute_sale_order_ids()
+                rec.opportunity_id.sales_target_line_id._compute_achieved_value()
+        
+
+
+
+            
+            
+
+                
 
     @api.model
     def create(self, vals):
@@ -70,6 +85,14 @@ class SaleOrder(models.Model):
                 }))
             if order_lines:
                 vals["order_line"] = order_lines
+                
+        order = super().create(vals)
+        
+        if order.opportunity_id.sales_target_line_id.lead_ids:  
+            order.opportunity_id.sales_target_line_id._compute_sale_order_ids()
+            order.opportunity_id.sales_target_line_id._compute_achieved_value()
+
+            return order
                 
 
         return super().create(vals)
