@@ -58,7 +58,6 @@ class CrmLead(models.Model):
                 customer = vals.get('partner_id')
                 salesperson = vals.get('user_id')
                 line_items = vals.get('line_items')
-                date = vals.get('expected_realization_date')
                 product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
                 
                 sales_target_line = self.env['sales.target.line'].search([
@@ -79,31 +78,26 @@ class CrmLead(models.Model):
     
     
     def write(self, vals):
-        # Check if we need to update sales_target_line_id based on segment_id, sub_segment_id, lead_type_id, partner_id, and user_id
         if 'segment_id' in vals and 'sub_segment_id' in vals and 'lead_type_id' in vals and 'partner_id' in vals and 'user_id' in vals and 'line_items' in vals:
-            # Search fand the "Backup-Lead" tag if it's not already defined
-            backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
-            if backup_lead_tag:
-                for record in self:
-                    segment_ids = [value[1] for value in vals.get('segment_id')]
-                    sub_segment_ids = [value[1] for value in vals.get('sub_segment_id')]
-                    lead_type_ids = [value[1] for value in vals.get('lead_type_id')]
-                    customer = vals.get('partner_id')
-                    salesperson = vals.get('user_id')
-                    line_items = vals.get('line_items')
-                    date = vals.get('expected_realization_date')
-                    product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
-                    
-                    sales_target_line = self.env['sales.target.line'].search([
-                        ('segment_id', 'in', segment_ids),
-                        ('sub_segment_id', 'in', sub_segment_ids), 
-                        ('lead_type_id', 'in', lead_type_ids), 
-                        ('partner_id', '=', customer), 
-                        ('user_id', '=', salesperson), 
-                        ('product_id', 'in', product_ids), 
-                        ])
-                    if sales_target_line:
-                        vals['sales_target_line_id'] = sales_target_line.id
+            for record in self:
+                segment_ids = [value[1] for value in vals.get('segment_id')]
+                sub_segment_ids = [value[1] for value in vals.get('sub_segment_id')]
+                lead_type_ids = [value[1] for value in vals.get('lead_type_id')]
+                customer = vals.get('partner_id')
+                salesperson = vals.get('user_id')
+                line_items = vals.get('line_items')
+                product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
+                
+                sales_target_line = self.env['sales.target.line'].search([
+                    ('segment_id', 'in', segment_ids),
+                    ('sub_segment_id', 'in', sub_segment_ids), 
+                    ('lead_type_id', 'in', lead_type_ids), 
+                    ('partner_id', '=', customer), 
+                    ('user_id', '=', salesperson), 
+                    ('product_id', 'in', product_ids), 
+                    ])
+                if sales_target_line:
+                    vals['sales_target_line_id'] = sales_target_line.id
 
         return super().write(vals)
 
