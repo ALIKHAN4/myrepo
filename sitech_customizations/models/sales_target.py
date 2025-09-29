@@ -209,6 +209,7 @@ class SalesTargetLine(models.Model):
     @api.depends("sale_order_ids.amount_total", "lead_ids")
     def _compute_achieved_value(self):
         for line in self:
+            raise UserError('trigger')
             total = sum(order.amount_total for order in line.sale_order_ids if order.state=='sale')
             line.achieved_value = total
             
