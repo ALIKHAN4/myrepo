@@ -68,7 +68,6 @@ class CrmLead(models.Model):
                     ('partner_id', '=', customer), 
                     ('user_id', '=', salesperson), 
                     ('product_id', 'in', product_ids), 
-                    ('expected_realization_date', '=', date), 
                     ])
                 if sales_target_line:
                     vals['sales_target_line_id'] = sales_target_line.id
