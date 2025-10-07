@@ -7,5 +7,6 @@ from . import sales_target
 from . import sale_order
 from . import crm_lost_reason
 from . import product_category
+from . import crm_stage
 
 
