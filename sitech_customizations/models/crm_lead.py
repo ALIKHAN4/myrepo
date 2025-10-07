@@ -65,11 +65,13 @@ class CrmLead(models.Model):
                 date = vals.get('expected_realization_date') if vals.get('expected_realization_date') else False
                 
                 sales_target_line = self.env['sales.target.line'].search([
+                     '|', '|', '|', '|',
                     ('segment_id', 'in', segment_ids),
                     ('sub_segment_id', 'in', sub_segment_ids), 
                     ('partner_id', '=', customer), 
                     ('user_id', '=', salesperson), 
                     ('product_id', 'in', product_ids), 
+                    ('month', '=', date.month), 
                     ])
                 if sales_target_line:
                     vals['sales_target_line_id'] = sales_target_line.id
