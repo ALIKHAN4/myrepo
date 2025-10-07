@@ -1,5 +1,7 @@
 from odoo import models, fields ,api
 from odoo.exceptions import UserError
+from datetime import datetime
+
 
 
 
@@ -63,17 +65,22 @@ class CrmLead(models.Model):
                 line_items = vals.get('line_items')
                 product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
                 date = vals.get('expected_realization_date') if vals.get('expected_realization_date') else False
-                raise UserError(f'date{date}.....type{type(data)}')
+
+                month = datetime.strptime(date, '%Y-%m-%d').month if date else False
                 
                 sales_target_line = self.env['sales.target.line'].search([
-                     '|', '|', '|', '|',
+                    '|',
+                    '|',
+                    '|',
+                    '|',
                     ('segment_id', 'in', segment_ids),
                     ('sub_segment_id', 'in', sub_segment_ids), 
                     ('partner_id', '=', customer), 
                     ('user_id', '=', salesperson), 
                     ('product_id', 'in', product_ids), 
-                    ('month', '=', date.month), 
+                    ('month', '=', month), 
                     ])
+                # raise UserError(sales_target_line)
                 if sales_target_line:
                     vals['sales_target_line_id'] = sales_target_line.id
                 

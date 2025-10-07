@@ -176,7 +176,7 @@ class SalesTargetLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product')
     description = fields.Char(string='Description')
     quantity = fields.Float(string='Qty', default=1.0)
-    unit_price = fields.Float(string='Unit Price')
+    unit_price = fields.Float(string='Amount')
     total_price = fields.Float(string='Total', compute='_compute_total_price', store=True)
     line_type = fields.Selection([('by_user', 'Current Month'), ('by_pending', 'Unachieved')], required=True,readonly=True, default='by_user', string='Target Type')
 
