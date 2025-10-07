@@ -180,6 +180,17 @@ class SalesTargetLine(models.Model):
     total_price = fields.Float(string='Total', compute='_compute_total_price', store=True)
     line_type = fields.Selection([('by_user', 'Current Month'), ('by_pending', 'Unachieved')], required=True,readonly=True, default='by_user', string='Target Type')
 
+    prob_counter = fields.Float('Probability Counter (%)', compute='_compute_prob_counter')
+
+    # @api.depends('target_id.lead_ids','target_id.lead_ids' )
+    def _compute_prob_counter(self):
+        for rec in self:
+            if rec.lead_ids:
+                probabilites = rec.lead_ids.mapped('prob_counter')
+                rec.prob_counter = sum(probabilites) / len(probabilites)
+            else:
+                rec.prob_counter = 0
+
     @api.depends('quantity', 'unit_price')
     def _compute_total_price(self):
         for line in self:

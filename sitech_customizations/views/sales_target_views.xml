@@ -71,6 +71,7 @@
                 <field name="unit_price"/>
                 <field name="total_price" sum='Total Amount'/>
                 <field name="achieved_value" readonly="1" sum='Total Achieved'/>
+                <field name="prob_counter" widget='percentage'/>
                 <field name="pending" readonly="1" sum='Total Pending'/>
                 <field name="line_type" widget="badge"/>
                 <field name="status" widget="badge" decoration-danger="status == 'low'" decoration-warning="status == 'medium'" decoration-success="status == 'high'"/>
