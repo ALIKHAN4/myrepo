@@ -194,7 +194,7 @@
                 <!-- Measures -->
                 <field name="target_value" type="measure"/>
                 <field name="achievement_value" type="measure"/>
-                <field name="achievement_status" type="measure"/>
+                <!-- <field name="achievement_status" type="measure"/> -->
 
                 <!-- Dimensions -->
                 <field name="company_id"/>
@@ -216,7 +216,7 @@
                 <field name="total_price" type="measure"/>
                 <field name="achieved_value" type="measure"/>
                 <field name="pending" type="measure"/>
-                <field name="achievement_status" type="measure"/>
+                <!-- <field name="achievement_status" type="measure"/> -->
                 <!-- Dimensions -->
                 <field name="company_id"/>
                 <field name="team_id"/>
