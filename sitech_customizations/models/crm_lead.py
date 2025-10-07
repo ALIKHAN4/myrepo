@@ -31,6 +31,12 @@ class CrmLead(models.Model):
     lead_children = fields.Integer(string='Lead Children',compute="compute_child_lead_ids",store=False,readonly=True)
 
     sale_target_count = fields.Integer(compute="_compute_sale_target_count")
+    # is_must_win = fields.Boolean(string='Is must win', compute='_compute_is_must_win')
+    # @api.depends("tag_ids")
+    # def _compute_is_must_win(self):
+    #     for rec in self:
+    #         if rec.tag_ids:
+    #             names = [tag.name for tag in rec.tag_ids]
 
     @api.depends("sales_target_line_id")
     def _compute_sale_target_count(self):
@@ -67,18 +73,17 @@ class CrmLead(models.Model):
                 date = vals.get('expected_realization_date') if vals.get('expected_realization_date') else False
 
                 month = datetime.strptime(date, '%Y-%m-%d').month if date else False
+                year = datetime.strptime(date, '%Y-%m-%d').year if date else False
                 
                 sales_target_line = self.env['sales.target.line'].search([
-                    '|',
-                    '|',
-                    '|',
-                    '|',
                     ('segment_id', 'in', segment_ids),
-                    ('sub_segment_id', 'in', sub_segment_ids), 
                     ('partner_id', '=', customer), 
                     ('user_id', '=', salesperson), 
                     ('product_id', 'in', product_ids), 
                     ('month', '=', month), 
+                    ('year', '=', year), 
+                    '|',
+                    ('sub_segment_id', 'in', sub_segment_ids), 
                     ])
                 # raise UserError(sales_target_line)
                 if sales_target_line:
