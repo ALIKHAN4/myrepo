@@ -50,8 +50,12 @@ class CrmLead(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         backup_lead_tag = self.env['crm.tag'].search([('name', 'like', 'Backup-Lead')], limit=1)
-        if backup_lead_tag:
-            for vals in vals_list:
+        must_win_tag = self.env['crm.tag'].search([('name', 'like', 'Must Win')], limit=1)
+        
+        for vals in vals_list:
+            if self.env.context.get('must_win'):
+                vals['tag_ids'] = [(6, 0, [must_win_tag.id])] if must_win_tag else False
+            elif backup_lead_tag:
                 segment_ids = [value[1] for value in vals.get('segment_id')]
                 sub_segment_ids = [value[1] for value in vals.get('sub_segment_id')]
                 lead_type_ids = [value[1] for value in vals.get('lead_type_id')]
@@ -71,7 +75,6 @@ class CrmLead(models.Model):
                 if sales_target_line:
                     vals['sales_target_line_id'] = sales_target_line.id
                 
-
                 vals['tag_ids'] = [(6, 0, [backup_lead_tag.id])]
                     
         return super().create(vals_list)

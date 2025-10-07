@@ -52,7 +52,6 @@ class SalesTarget(models.Model):
             existing_leads = self.env['crm.lead'].search([('sales_target_line_id', 'in', rec.line_ids.ids)])
             created_for = set(existing_leads.mapped('sales_target_line_id').ids)
             tag = self.env["crm.tag"].search([("name","like","Must Win")],limit=1)
-            raise UserError(str(tag))
             for line in rec.line_ids:
                 if line.id in created_for:
                     continue
@@ -74,7 +73,7 @@ class SalesTarget(models.Model):
 
 
                 }
-                lead = self.env['crm.lead'].create(vals)
+                lead = self.env['crm.lead'].with_context(must_win=True).create(vals)
                 # if you have crm.lead.line model:
                 self.env["crm.lead.line"].create({
                     "lead_id": lead.id,
