@@ -186,7 +186,7 @@ class SalesTargetLine(models.Model):
     def _compute_prob_counter(self):
         for rec in self:
             if rec.lead_ids:
-                probabilites = rec.lead_ids.mapped('prob_counter')
+                probabilites = rec.lead_ids.mapped('stage_id').mapped('prob_counter')
                 rec.prob_counter = sum(probabilites) / len(probabilites)
             else:
                 rec.prob_counter = 0
