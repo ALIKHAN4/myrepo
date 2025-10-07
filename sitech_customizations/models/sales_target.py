@@ -181,6 +181,14 @@ class SalesTargetLine(models.Model):
     line_type = fields.Selection([('by_user', 'Current Month'), ('by_pending', 'Unachieved')], required=True,readonly=True, default='by_user', string='Target Type')
 
     prob_counter = fields.Float('Probability Counter (%)', compute='_compute_prob_counter')
+    month = fields.Integer(string='Month', compute="_compute_month", store=True)
+    @api.depends('expected_realization_date')
+    def _compute_month(self):
+        for rec in self:
+            if rec.expected_realization_date:
+                rec.month = rec.expected_realization_date.month
+            else:
+                rec.month = False
 
     # @api.depends('target_id.lead_ids','target_id.lead_ids' )
     def _compute_prob_counter(self):
