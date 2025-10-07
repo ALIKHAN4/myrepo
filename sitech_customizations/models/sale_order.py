@@ -95,4 +95,4 @@ class SaleOrder(models.Model):
             return order
                 
 
-        return super().create(vals)
+        return order
