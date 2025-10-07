@@ -63,6 +63,7 @@ class CrmLead(models.Model):
                 line_items = vals.get('line_items')
                 product_ids = [line_item[2].get('product_id') for line_item in line_items] if line_items else []
                 date = vals.get('expected_realization_date') if vals.get('expected_realization_date') else False
+                raise UserError(f'date{date}.....type{type(data)}')
                 
                 sales_target_line = self.env['sales.target.line'].search([
                      '|', '|', '|', '|',
