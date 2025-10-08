@@ -31,12 +31,19 @@ class CrmLead(models.Model):
     lead_children = fields.Integer(string='Lead Children',compute="compute_child_lead_ids",store=False,readonly=True)
 
     sale_target_count = fields.Integer(compute="_compute_sale_target_count")
-    # is_must_win = fields.Boolean(string='Is must win', compute='_compute_is_must_win')
-    # @api.depends("tag_ids")
-    # def _compute_is_must_win(self):
-    #     for rec in self:
-    #         if rec.tag_ids:
-    #             names = [tag.name for tag in rec.tag_ids]
+    is_must_win = fields.Boolean(string='Is must win', compute='_compute_is_must_win')
+
+    @api.depends("tag_ids")
+    def _compute_is_must_win(self):
+        for rec in self:
+            if rec.tag_ids:
+                must_win_tag = self.env['crm.tag'].search([('name', 'like', 'Must Win')], limit=1)
+                if must_win_tag and must_win_tag in rec.tag_ids:
+                    rec.is_must_win = True
+                else:
+                    rec.is_must_win = False
+            else:
+                rec.is_must_win = False
 
     @api.depends("sales_target_line_id")
     def _compute_sale_target_count(self):
@@ -83,6 +90,7 @@ class CrmLead(models.Model):
                     ('month', '=', month), 
                     ('year', '=', year), 
                     '|',
+                    ('sub_segment_id', '=', False),
                     ('sub_segment_id', 'in', sub_segment_ids), 
                     ])
                 # raise UserError(sales_target_line)

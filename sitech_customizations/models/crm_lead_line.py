@@ -21,7 +21,7 @@ class CrmLeadLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product')
     description = fields.Char(string='Description')
     quantity = fields.Float(string='Qty', default=1.0)
-    unit_price = fields.Float(string='Unit Price')
+    unit_price = fields.Float(string='Amount')
     total_price = fields.Float(string='Total', compute='_compute_total_price', store=True)
 
     @api.depends('quantity', 'unit_price')

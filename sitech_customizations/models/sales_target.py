@@ -182,12 +182,15 @@ class SalesTargetLine(models.Model):
 
     prob_counter = fields.Float('Probability Counter (%)', compute='_compute_prob_counter')
     month = fields.Integer(string='Month', compute="_compute_month", store=True)
+    year = fields.Integer(string='Month', compute="_compute_month", store=True)
     @api.depends('expected_realization_date')
     def _compute_month(self):
         for rec in self:
             if rec.expected_realization_date:
                 rec.month = rec.expected_realization_date.month
+                rec.year = rec.expected_realization_date.year
             else:
+                rec.month = False
                 rec.month = False
 
     # @api.depends('target_id.lead_ids','target_id.lead_ids' )
