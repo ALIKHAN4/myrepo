@@ -18,10 +18,11 @@ export class IntegerQuote extends IntegerField {
     }
     async openQuoteAction() {
         if (this.props.quoteAction){
+            console.log(this.props.recor)
             const result = await this.orm.call(
                 "sales.target.line",
                 this.props.quoteAction,
-                [[this.props.record.data.id]]
+                [[this.props.record.resId]]
             );
             console.log('domain.......', result)
             this.action.doAction({
