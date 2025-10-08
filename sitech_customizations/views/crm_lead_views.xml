@@ -37,6 +37,7 @@ crm.view_crm_lead_kanban -->
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">
                 <div>
+                    <field name="expected_realization_date"/>
                     <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                     <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                     <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
@@ -51,6 +52,7 @@ crm.view_crm_lead_kanban -->
         <field name="arch" type="xml">
             <xpath expr="//field[@name='contact_name']" position="after">
                 <div>
+                    
                     <field name="segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                     <field name="lead_type_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                     <field name="sub_segment_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>

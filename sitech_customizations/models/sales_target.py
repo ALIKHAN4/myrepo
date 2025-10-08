@@ -276,7 +276,7 @@ class SalesTargetLine(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "sale.order",
             "view_mode": "list",
-            "domain": [("id", "in", self.sale_order_ids.ids)] + (domain or []),
+            "domain": [["id", "in", self.sale_order_ids.ids]] + (domain or []),
             "target": "current",
         }
 
@@ -284,10 +284,10 @@ class SalesTargetLine(models.Model):
         return self.action_view_orders()
 
     def action_view_confirmed(self):
-        return self.action_view_orders([("state", "in", ["sale"])])
+        return self.action_view_orders([["state", "in", ["sale"]]])
 
     def action_view_pending(self):
-        return self.action_view_orders([("state", "in", ["draft","sent"])])
+        return self.action_view_orders([["state", "in", ["draft","sent"]]])
 
 
     def create_auto_pending_line(self):
